@@ -1,8 +1,10 @@
 const fs = require("fs")
 const path = require("path")
-const { returnFilePath, requestHandler } = require("../request-handler.js")
 
-const { mockResponse, mockRequest } = require("./mockutils.js")
+const { returnFilePath, requestHandler } = require("../request-handler.js")
+const fileHandlerModule = require("../../file-handler/file-handler.js")
+
+const { mockResponse, mockRequest } = require("../../tests/mockutils.js")
 
 jest.mock("fs")
 jest.mock("path")
@@ -58,5 +60,16 @@ describe("the requestHandler", () => {
 
         expect(res.writeHead).toHaveBeenCalledWith(405, { 'Content-Type': 'text/plain' })
         expect(res.end).toHaveBeenCalledWith('405 POST is not supported')
+    })
+
+    it("should delegate calls to `serveHTML` correctly", () => {
+        const req = mockRequest({ method: "GET", url: "/" })
+        const res = mockResponse()
+
+        const serveSpy = jest.spyOn(fileHandlerModule, 'serveHTML')
+
+        requestHandler(req, res)
+
+        expect(serveSpy).toHaveBeenCalled()
     })
 })

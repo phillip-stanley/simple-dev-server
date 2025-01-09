@@ -2,39 +2,30 @@ const fs = require("fs")
 const path = require("path")
 const { serveHTML } = require("../file-handler")
 
-// Mock the fs module
+const { mockResponse, mockRequest } = require("../../tests/mockutils.js")
+
 jest.mock("fs")
 
-
 describe("serveHTML", () => {
-    let res
-
-    beforeEach(() => {
-        // Mock the HTTP response object
-        res = {
-            writeHead: jest.fn(),
-            end: jest.fn()
-        }
-    })
-
     afterEach(() => {
-        jest.clearAllMocks() // clear mocks after each test
+        jest.clearAllMocks()
     })
 
-    test('Should serve an HTML file successfully', () => {
-        // Mock fs.readFile to simulate a successful file read
+    it('Should serve an HTML file successfully', () => {
+        const req = mockRequest({ method: "GET", url: "/" })
+        const res = mockResponse()
 
         const htmlstring = '<html><body>Hello World</body></html>'
         const scriptstring = '\n\n<script>undefined</script>'
-
-        fs.readFile.mockImplementation((filePath, encoding, callback) => {
-            callback(null, htmlstring)
-        })
-
         const filename = path.join(__dirname, '../../html/index.html')
+
+        fs.readFile
+            .mockImplementation((filePath, encoding, callback) => {
+                callback(null, htmlstring)
+            })
+
         serveHTML(filename, res);
 
-        // Assertions
         expect(fs.readFile).toHaveBeenCalledWith(
             path.join(__dirname, '../../html/index.html'),
             'utf8',
@@ -49,6 +40,24 @@ describe("serveHTML", () => {
             `${htmlstring}${scriptstring}`
         )
 
+    })
+
+    it('respond with 404 when there is no file to serve', () => {
+        const req = mockRequest({ method: "GET", url: "/" })
+        const res = mockResponse()
+
+        const filename = path.join(__dirname, '../../html/index.html')
+
+        fs.readFile
+            .mockImplementation((filePath, encoding, callback) => {
+                callback(new Error("file not found"), "")
+            })
+
+        serveHTML(filename, res)
+
+        expect(res.writeHead).toHaveBeenCalledWith(404, {
+            'Content-Type': 'text/plain'
+        })
     })
 })
 

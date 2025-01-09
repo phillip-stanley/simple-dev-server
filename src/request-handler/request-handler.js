@@ -1,5 +1,6 @@
 const path = require("path")
-const { serveHTML } = require("../file-handler/file-handler")
+const fileHandlerModule = require("../file-handler/file-handler")
+//const { serveHTML } = require("../file-handler/file-handler")
 const { formatRequestUrl } = require("../utils/utils")
 
 /**
@@ -21,7 +22,7 @@ const returnFilePath = (url) => {
 const requestHandler = (req, res) => {
     if (req.method === 'GET') {
         filePath = returnFilePath(req.url)
-        return serveHTML(filePath, res)
+        return fileHandlerModule.serveHTML(filePath, res)
     }
     res.writeHead(405, { 'Content-Type': 'text/plain' })
     res.end(`405 ${req.method} is not supported`)

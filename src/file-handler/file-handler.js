@@ -10,7 +10,6 @@ const CLIENT_CODE = fs.readFileSync(path.join(__dirname, '../../scripts/client-s
  * @param {object} res - the response object from the HTTP request
  */
 const serveHTML = (filePath, res) => {
-    console.log("filePath", filePath)
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             res.writeHead(404, { 'Content-Type': 'text/plain' })
