@@ -6,12 +6,15 @@
   "scripts": {
     "test": "jest --watch",
     "test-cov": "jest --coverage",
-    "start": "node index.js"
+    "start": "node --env-file=.env index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
   }
 }

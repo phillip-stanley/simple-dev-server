@@ -1,4 +1,6 @@
 const http = require("http");
+const WebSocket = require("ws");
+
 const { requestHandler } = require("./src/request-handler/request-handler")
 
 // Goals
@@ -8,18 +10,37 @@ const { requestHandler } = require("./src/request-handler/request-handler")
 
 
 // Tasks
-// 1. Setup module for handling files and script injection (commonJS)
-// 2. Sever a 404 html file for handling 404 errors
-// 4. write tests for the previous 2 steps
+// 1. look at file watcher
+// 2. setup a file watcher for the html directory
+// 3. push a ws.send() message when a file changes
+// 4. get the browser to reload when this message is received
 
-// TODO: move these to env variables
-const port = 8000
-const host = "127.0.0.1"
+const wsServer = new WebSocket.Server({ port: 8080 })
+
+
+const connectionHandler = (ws) => {
+    console.log('New client connected')
+
+    ws.send('Welcome simple-dev-server websocket')
+
+    ws.on('close', () => {
+        console.log('client disconnected\n')
+    })
+
+}
+
+wsServer.on('connection', connectionHandler)
+
+
+console.log('websocket server is running on ws://localhost:8080')
+
+const port = process.env.HTTP_PORT
+const host = process.env.HTTP_HOST
 
 const server = http.createServer(requestHandler);
 
 server.listen(port, () => {
-    console.log(`Server listening at http://${host}:${port}/`)
+    console.log(`Server listening at http://${host}:${port}/\n`)
 });
 
 
