@@ -1,6 +1,7 @@
 const http = require("http");
 const WebSocket = require("ws");
 
+const { connectionHandler } = require("./src/connection-handler/connection-handler")
 const { requestHandler } = require("./src/request-handler/request-handler")
 
 // Goals
@@ -16,18 +17,6 @@ const { requestHandler } = require("./src/request-handler/request-handler")
 // 4. get the browser to reload when this message is received
 
 const wsServer = new WebSocket.Server({ port: 8080 })
-
-
-const connectionHandler = (ws) => {
-    console.log('New client connected')
-
-    ws.send('Welcome simple-dev-server websocket')
-
-    ws.on('close', () => {
-        console.log('client disconnected\n')
-    })
-
-}
 
 wsServer.on('connection', connectionHandler)
 

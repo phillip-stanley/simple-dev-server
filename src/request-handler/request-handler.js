@@ -1,6 +1,6 @@
 const path = require("path")
 const fileHandlerModule = require("../file-handler/file-handler")
-//const { serveHTML } = require("../file-handler/file-handler")
+
 const { formatRequestUrl } = require("../utils/utils")
 
 /**
