@@ -1,35 +1,27 @@
 const http = require("http");
-const WebSocket = require("ws");
+const chokidar = require("chokidar")
 
-const { connectionHandler } = require("./src/connection-handler/connection-handler")
-const { requestHandler } = require("./src/request-handler/request-handler")
-
-// Goals
-// 1. Why can't path be used with ES modules?
-// 2. compare fs.readFile and fs.readFileSync for the fileHandler function of this server
-// 3. look at websockets and how to pass messages to the browser
-
+const { SocketServer } = require("./src/socket-server/socket-server")
+const { HttpServer } = require("./src/http-server/http-server")
 
 // Tasks
-// 1. look at file watcher
-// 2. setup a file watcher for the html directory
-// 3. push a ws.send() message when a file changes
-// 4. get the browser to reload when this message is received
 
-const wsServer = new WebSocket.Server({ port: 8080 })
+SocketServer.setupServer(process.env.WS_PORT)
 
-wsServer.on('connection', connectionHandler)
+HttpServer.createServer(process.env.HTTP_HOST, process.env.HTTP_PORT)
 
+/**
+ * filewatchHandler handles file change event handling
+ * param {string} - event type Eg: `add`, `change`, `unlink`
+ * param {string} - file name that triggered the event
+ *
+*/
+const filewatchHandler = (event, path) => {
+    if (event === 'change') {
+        console.log('change event triggered')
+        SocketServer.broadcastMessage('Action: reload')
+    }
+}
 
-console.log('websocket server is running on ws://localhost:8080')
-
-const port = process.env.HTTP_PORT
-const host = process.env.HTTP_HOST
-
-const server = http.createServer(requestHandler);
-
-server.listen(port, () => {
-    console.log(`Server listening at http://${host}:${port}/\n`)
-});
-
+chokidar.watch('./html').on('all', filewatchHandler)
 
