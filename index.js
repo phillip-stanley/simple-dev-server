@@ -1,27 +1,16 @@
-const http = require("http");
-const chokidar = require("chokidar")
-
 const { SocketServer } = require("./src/socket-server/socket-server")
 const { HttpServer } = require("./src/http-server/http-server")
+const { FileWatcher } = require("./src/file-watcher/file-watcher")
 
-// Tasks
-
+// setup websocket server for monitor browser connections
 SocketServer.setupServer(process.env.WS_PORT)
 
+// setup http server to serve development files
 HttpServer.createServer(process.env.HTTP_HOST, process.env.HTTP_PORT)
 
-/**
- * filewatchHandler handles file change event handling
- * param {string} - event type Eg: `add`, `change`, `unlink`
- * param {string} - file name that triggered the event
- *
-*/
-const filewatchHandler = (event, path) => {
-    if (event === 'change') {
-        console.log('change event triggered')
-        SocketServer.broadcastMessage('Action: reload')
-    }
-}
-
-chokidar.watch('./html').on('all', filewatchHandler)
+// setup filewatcher module 
+FileWatcher.setupWatcher('./html')
+FileWatcher.on('File changed', (filename) => {
+    SocketServer.broadcastMessage(`${filename} changed`)
+})
 

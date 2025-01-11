@@ -18,7 +18,6 @@ const SocketServer = (function() {
      * param {string} message: the message to send to clients
      */
     function broadcastMessage(message) {
-        console.log(webSocketServer.clients.length)
         webSocketServer.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(`Broadcast message: ${message}`)
