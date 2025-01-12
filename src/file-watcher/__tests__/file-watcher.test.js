@@ -9,9 +9,11 @@ describe.only('FileWatcher', () => {
     let mockOn;
 
     beforeEach(() => {
+        fileWatcher = new FileWatcher();
         mockEmit = jest.fn();
         mockOn = jest.fn();
         jest.spyOn(console, 'log').mockImplementation(() => { });
+        console.error = jest.fn();
     });
 
     afterEach(() => {
@@ -19,11 +21,10 @@ describe.only('FileWatcher', () => {
     });
 
     it('should initialize chokidar when `setupWatcher` is run', () => {
-        fakeTestDirectory = '/test/path/';
-        fakeTestOpts = { ignoreInitial: true }
+        const fakeTestDirectory = '/test/path/';
+        const fakeTestOpts = { ignoreInitial: true }
         chokidar.watch.mockReturnValue({ on: mockOn });
 
-        const fileWatcher = new FileWatcher()
         fileWatcher.setupWatcher(fakeTestDirectory, fakeTestOpts);
 
         expect(chokidar.watch).toHaveBeenCalledWith(fakeTestDirectory, fakeTestOpts);
@@ -31,12 +32,11 @@ describe.only('FileWatcher', () => {
     });
 
     it('should emit `fileChanged` event when a file is modified', () => {
-        fakeTestDirectory = '/test/path/';
-        fakeTestOpts = { ignoreInitial: true };
-        fakeTestFile = 'test.html';
+        const fakeTestDirectory = '/test/path/';
+        const fakeTestOpts = { ignoreInitial: true };
+        const fakeTestFile = 'test.html';
         chokidar.watch.mockReturnValue({ on: mockOn });
 
-        fileWatcher = new FileWatcher()
         fileWatcher.setupWatcher(fakeTestDirectory, fakeTestOpts);
         fileWatcher.on('fileChanged', mockEmit);
 
@@ -46,5 +46,19 @@ describe.only('FileWatcher', () => {
         expect(console.log).toHaveBeenCalledWith(`File ${fakeTestFile} changed`);
         expect(mockEmit).toHaveBeenCalledWith(fakeTestFile);
     });
-})
 
+    it('handleError should log and emit an error', () => {
+        const testError = new Error('test error');
+        chokidar.watch.mockImplementation(() => {
+            throw testError;
+        })
+        const handleErrorSpy = jest.spyOn(fileWatcher, 'handleError');
+
+        expect(() => {
+            fileWatcher.setupWatcher('/test/path');
+        }).not.toThrow(testError);
+
+        expect(handleErrorSpy).toHaveBeenCalledWith(testError);
+
+    })
+});
