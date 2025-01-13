@@ -1,9 +1,10 @@
+const SocketServer = require('./src/socket-server/socket-server');
+const HttpServer = require('./src//http-server/http-server');
 const FileWatcher = require("./src/file-watcher/file-watcher");
 
-const { SocketServer } = require("./src/socket-server/socket-server")
-const HttpServer = require('./src//http-server/http-server-class');
-
-SocketServer.setupServer(process.env.WS_PORT)
+// setup socket server
+const socketServer = new SocketServer()
+socketServer.setupServer(process.env.WS_PORT)
 
 // setup http server
 const httpServer = new HttpServer()
@@ -13,6 +14,6 @@ httpServer.createServer(process.env.HTTP_HOST, process.env.HTTP_PORT)
 const fileWatcher = new FileWatcher()
 fileWatcher.setupWatcher(process.env.WATCH_DIR)
 fileWatcher.on('fileChanged', (filename) => {
-    SocketServer.broadcastMessage(`${filename} changed`)
+    socketServer.broadcastMessage(`${filename} changed`)
 })
 
