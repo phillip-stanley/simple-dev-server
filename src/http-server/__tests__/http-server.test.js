@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const HttpServer = require('../http-server-class');
+const HttpServer = require('../http-server');
 const { mockResponse, mockRequest } = require('../../tests/mockutils');
 
 jest.mock('http');
