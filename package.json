@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "simple nodejs dev-server",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "jest --watch",
     "test-cov": "jest --coverage",
