@@ -5,8 +5,9 @@ const path = require('path');
 
 
 class HttpServer {
-    constructor() {
+    constructor(watchDirectory) {
         this.httpServer = null;
+        this.watchDirectory = watchDirectory || 'public';
         this.clientCode = fs.readFileSync(
             path.join(__dirname, '../../scripts/client-script.js'),
             'utf8'
@@ -59,7 +60,7 @@ class HttpServer {
         let filename = url === '/'
             ? 'index.html'
             : this.formatRequestUrl(url.slice(1));
-        return path.resolve(`html/${filename}`);
+        return path.resolve(`${this.watchDirectory}/${filename}`);
     };
 
     /**

@@ -44,18 +44,18 @@ describe('HttpServer', () => {
         expect(mockRes.end).toHaveBeenCalledWith('405 Method Not Allowed');
     });
 
-    it('should return `html/index.html` when `/` is provided in req.url', () => {
+    it('should return `public/index.html` when `/` is provided in req.url', () => {
         const fakeUrl = '/';
         const fakeFilename = 'index.html';
         const formatUrlSpy = jest.spyOn(httpServer, 'formatRequestUrl')
             .mockImplementation(() => { });
         const pathSpy = jest.spyOn(path, 'resolve').mockImplementation(
-            () => `html/${fakeFilename}`
+            () => `public/${fakeFilename}`
         );
 
         httpServer.returnFilePath(fakeUrl);
 
-        expect(pathSpy).toHaveBeenCalledWith(`html/${fakeFilename}`);
+        expect(pathSpy).toHaveBeenCalledWith(`public/${fakeFilename}`);
         expect(formatUrlSpy).not.toHaveBeenCalled();
     });
 
@@ -63,12 +63,12 @@ describe('HttpServer', () => {
         const fakeUrl = '/test-page';
         const fakeFilename = 'test-page.html';
         const pathSpy = jest.spyOn(path, 'resolve').mockImplementation(
-            () => `html/${fakeFilename}`
+            () => `public/${fakeFilename}`
         );
 
         const result = httpServer.returnFilePath(fakeUrl);
 
-        expect(pathSpy).toHaveBeenCalledWith(`html/${fakeFilename}`);
-        expect(result).toEqual(`html/${fakeFilename}`);
+        expect(pathSpy).toHaveBeenCalledWith(`public/${fakeFilename}`);
+        expect(result).toEqual(`public/${fakeFilename}`);
     });
 })
