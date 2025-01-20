@@ -10,6 +10,12 @@ class FileWatcher extends EventEmitter {
         this.watchEvents = opts.watchEvents || ['change']
     }
 
+    /**
+    * setupWatcher setups up a file watcher with `chokidar`
+    * @param {string} directory - the directory to watch for file changes
+    * @param {object} opts - object for configuration options for the watcher.
+    * @returns {void}
+    */
     setupWatcher(directory = '.', opts = {}) {
         try {
             const watchOptions = { ...opts, ignoreInitial: true };
@@ -20,6 +26,12 @@ class FileWatcher extends EventEmitter {
         }
     }
 
+    /**
+    * fileWatchHandler handles all watch events emitted by `this.watcher`
+    * @param {object} event - the event object sent from `chokidar`
+    * @param {string} opts - the path of the file changed
+    * @returns {void}
+    */
     fileWatchHandler(event, path) {
         if (this.watchEvents.includes(event)) {
             console.log(`File ${path} changed`)
@@ -27,6 +39,11 @@ class FileWatcher extends EventEmitter {
         }
     }
 
+    /**
+    * handleError emits an error event when called with an error message
+    * @param {string} error - error message to emit to the application
+    * @returns {void}
+    */
     handleError(error) {
         console.error(`FileWatcher: ${error}`)
         this.emit('error', error);

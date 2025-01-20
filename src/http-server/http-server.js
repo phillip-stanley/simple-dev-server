@@ -7,7 +7,7 @@ const path = require('path');
 class HttpServer {
     constructor(watchDirectory) {
         this.httpServer = null;
-        this.watchDirectory = watchDirectory;
+        this.watchDirectory = watchDirectory || 'public';
         this.clientCode = fs.readFileSync(
             path.join(__dirname, '../../scripts/client-script.js'),
             'utf8'

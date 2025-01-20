@@ -1,7 +1,7 @@
 {
-  "name": "simple-dev-server",
-  "version": "1.0.0",
-  "description": "simple nodejs dev-server",
+  "name": "@phill-stanley/simple-dev-server",
+  "version": "0.1.0",
+  "description": "simple nodejs dev-server with hot-reloading",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
